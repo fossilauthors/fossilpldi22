@@ -1,0 +1,495 @@
+Running benchmark bst-left-right:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(bst(v1),
+        Implies(hbst(v1)[v2], minr(v1) <= minr(v2)))
+Implies(bst(v1), Implies(hbst(v1)[v2], bst(v2)))
+Implies(bst(v1), Implies(hbst(v1)[v2], Not(v2 == nil)))
+Implies(bst(v1),
+        Implies(hbst(v1)[v2], maxr(v2) <= maxr(v1)))
+Implies(bst(v1),
+        Implies(minr(v1) <= maxr(v2), hbst(v2)[v2]))
+Implies(bst(v1),
+        Implies(minr(v2) <= maxr(v1),
+                Implies(bst(v2), hbst(v2)[v2])))
+Total lemmas proposed: 28
+Total lemmas proved: 6
+Benchmark bst-left-right  SUCCESS: 180s
+
+Running benchmark bst-left:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(bst(v), Implies(keys(v)[k], minr(v) <= k))
+Total lemmas proposed: 5
+Total lemmas proved: 1
+Benchmark bst-left  SUCCESS: 12s
+
+Running benchmark bst-leftmost:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(bst(v), minr(leftmost(v)) == minr(v))
+Implies(bst(v), key(leftmost(v)) <= key(v))
+Implies(bst(v), bst(leftmost(v)))
+Implies(bst(v), maxr(leftmost(v)) <= maxr(v))
+Implies(bst(v),
+        Implies(Not(v == nil), Not(leftmost(v) == nil)))
+Implies(bst(v),
+        Implies(Implies(bst(leftmost(v)), hbst(v)[v]),
+                key(leftmost(v)) <= minr(leftmost(v))))
+Total lemmas proposed: 12
+Total lemmas proved: 6
+Benchmark bst-leftmost  SUCCESS: 25s + 40s
+
+Running benchmark bst-maximal:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(bst(v1), Implies(hbst(v1)[v2], bst(v2)))
+Total lemmas proposed: 6
+Total lemmas proved: 1
+Benchmark bst-maximal  SUCCESS: 7s
+
+Running benchmark bst-minimal:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(bst(v1), Implies(hbst(v1)[v2], bst(v2)))
+Total lemmas proposed: 5
+Total lemmas proved: 1
+Benchmark bst-minimal  SUCCESS: 7s
+
+Running benchmark bst-right:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(bst(v), Implies(keys(v)[k], k <= maxr(v)))
+Total lemmas proposed: 7
+Total lemmas proved: 1
+Benchmark bst-right  SUCCESS: 15s
+
+Running benchmark bst-tree:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(bst(v), tree(v))
+Total lemmas proposed: 2
+Total lemmas proved: 1
+Benchmark bst-tree  SUCCESS: 4s
+
+Running benchmark cyclic-next:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lseg(v1, v2), lseg(nxt(v1), nxt(v2)))
+Total lemmas proposed: 5
+Total lemmas proved: 1
+Benchmark cyclic-next  SUCCESS: 5s + 5s
+
+Running benchmark dag-reach:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(reach_lr(v1, v2), Implies(dag(v1), dag(v2)))
+Total lemmas proposed: 4
+Total lemmas proved: 1
+Benchmark dag-reach  SUCCESS: 3s
+
+Running benchmark dag-reach2:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(reach_lr(v1, v2), Implies(dag(v1), dag(v2)))
+Total lemmas proposed: 5
+Total lemmas proved: 1
+Benchmark dag-reach2  SUCCESS: 5s
+
+Running benchmark dlist-list:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(dlst(v), lst(v))
+Total lemmas proposed: 1
+Total lemmas proved: 1
+Benchmark dlist-list  SUCCESS: 1s
+
+Running benchmark even-list:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(even_lst(v), lst(v))
+Total lemmas proposed: 2
+Total lemmas proved: 1
+Benchmark even-list  SUCCESS: 1s
+
+Running benchmark list-even-or-odd:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lst(v),
+        Implies(Implies(even_lst(nxt(v)), False),
+                even_lst(v)))
+Implies(odd_lst(v), even_lst(nxt(v)))
+Implies(even_lst(v),
+        Implies(Not(nxt(v) == nil), odd_lst(nxt(v))))
+Total lemmas proposed: 7
+Total lemmas proved: 3
+Benchmark list-even-or-odd  SUCCESS: 2s + 5s
+
+Running benchmark list-hlist-list:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lst(v1), Implies(hlst(v1)[v2], lst(v2)))
+Total lemmas proposed: 4
+Total lemmas proved: 1
+Benchmark list-hlist-list  SUCCESS: 2s
+
+Running benchmark list-hlist-lseg:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lst(v1), Implies(hlst(v1)[v2], lseg(v1, v2)))
+Total lemmas proposed: 5
+Total lemmas proved: 1
+Benchmark list-hlist-lseg  SUCCESS: 3s
+
+Running benchmark list-lseg-keys:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lseg(v1, v2), Implies(keys(v2)[k], keys(v1)[k]))
+Total lemmas proposed: 7
+Total lemmas proved: 1
+Benchmark list-lseg-keys  SUCCESS: 5s
+
+Running benchmark list-lseg-keys2:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lseg(v1, v2), Implies(lst(v1), lst(v2)))
+Implies(lseg(v1, v2), Implies(keys(v2)[k], keys(v1)[k]))
+Total lemmas proposed: 16
+Total lemmas proved: 2
+Benchmark list-lseg-keys2  SUCCESS: 13s
+
+Running benchmark listlen-list:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lstlen_bool(v), lst(v))
+Total lemmas proposed: 1
+Total lemmas proved: 1
+Benchmark listlen-list  SUCCESS: 1s
+
+Running benchmark lseg-ext:
+---------------------------------------------------
+Goal is not first-order provable.
+Synthesis solver returns unsat. Exiting.
+Total lemmas proposed: n/a
+Total lemmas proved: n/a
+Benchmark lseg-ext  FAILURE: 900s timeout
+
+Running benchmark lseg-list:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lseg(v1, v2), Implies(lst(v2), lst(v1)))
+Total lemmas proposed: 9
+Total lemmas proved: 1
+Benchmark lseg-list  SUCCESS: 9s
+
+Running benchmark lseg-next-dyn:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lsegy(v1), lsegz_p(v1))
+Total lemmas proposed: 1
+Total lemmas proved: 1
+Benchmark lseg-next-dyn  SUCCESS: 1s
+
+Running benchmark lseg-next:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lseg(v1, v2), Implies(lseg(v2, z), lseg(v1, z)))
+Total lemmas proposed: 9
+Total lemmas proved: 1
+Benchmark lseg-next  SUCCESS: 10s
+
+Running benchmark lseg-nil-list:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lseg(v1, v2), Implies(lst(v2), lst(v1)))
+Total lemmas proposed: 7
+Total lemmas proved: 1
+Benchmark lseg-nil-list  SUCCESS: 6s
+
+Running benchmark lseg-trans:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lseg(v1, v2), Implies(lseg(v2, z), lseg(v1, z)))
+Total lemmas proposed: 7
+Total lemmas proved: 1
+Benchmark lseg-trans  SUCCESS: 9s
+
+Running benchmark lseg-trans2:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(lseg(v1, v2), Implies(lseg(v2, z), lseg(v1, z)))
+Total lemmas proposed: 6
+Total lemmas proved: 1
+Benchmark lseg-trans2  SUCCESS: 8s
+
+Running benchmark maxheap-dag:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(maxheap(v), dag(v))
+Total lemmas proposed: 2
+Total lemmas proved: 1
+Benchmark maxheap-dag  SUCCESS: 2s
+
+Running benchmark maxheap-htree-key:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(maxheap(v1), Implies(htree(v1)[v2], maxheap(v2)))
+Implies(maxheap(v1),
+        Implies(htree(v1)[v2], key(v2) <= key(v1)))
+Total lemmas proposed: 14
+Total lemmas proved: 2
+Benchmark maxheap-htree-key  SUCCESS: 48s + 78s
+
+Running benchmark maxheap-keys:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(maxheap(v), Implies(keys(v)[k], k <= key(v)))
+Total lemmas proposed: 8
+Total lemmas proved: 1
+Benchmark maxheap-keys  SUCCESS: 7s + 11s
+
+Running benchmark maxheap-tree:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(maxheap(v), tree(v))
+Total lemmas proposed: 2
+Total lemmas proved: 1
+Benchmark maxheap-tree  SUCCESS: 2s
+
+Running benchmark odd-list:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(odd_lst(v), lst(v))
+Total lemmas proposed: 2
+Total lemmas proved: 1
+Benchmark odd-list  SUCCESS: 2s
+
+Running benchmark reach-left-right:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(tree(v1), Implies(htree(v1)[v2], tree(v2)))
+Implies(reach_lr(v1, v2), Implies(tree(v1), tree(v2)))
+Implies(reach_lr(v1, v2),
+        Implies(htree(v2)[v2], htree(v1)[v1]))
+Implies(reach_lr(v1, v2),
+        Implies(htree(v2)[v2], htree(v1)[v2]))
+Total lemmas proposed: 13
+Total lemmas proved: 4
+Benchmark reach-left-right  SUCCESS: 33s
+
+Running benchmark reachability:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(reach_pgm(z), Or(v2(z) == c, v1(z) == v2(z)))
+Total lemmas proposed: 5
+Total lemmas proved: 1
+Benchmark reachability  SUCCESS: 6s
+
+Running benchmark reachability2:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(reach_pgm(z), v1(z) == v2(z))
+Total lemmas proposed: 2
+Total lemmas proved: 1
+Benchmark reachability2  SUCCESS: 2s
+
+Running benchmark reachability3:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(reach_pgm(z), v1(z) == v2(z))
+Total lemmas proposed: 3
+Total lemmas proved: 1
+Benchmark reachability3  SUCCESS: 4s
+
+Running benchmark reachability4:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(reach_pgm(z), v2(z) == v1(z))
+Total lemmas proposed: 2
+Total lemmas proved: 1
+Benchmark reachability4  SUCCESS: 2s
+
+Running benchmark reachability5:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(reach_pgm(z), Or(v1(z) == n(v2(z)), v2(z) == c))
+Total lemmas proposed: 6
+Total lemmas proved: 1
+Benchmark reachability5  SUCCESS: 9s
+
+Running benchmark reachability6:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(reach_pgm(z), v1(z) == n(v2(z)))
+Total lemmas proposed: 3
+Total lemmas proved: 1
+Benchmark reachability6  SUCCESS: 3s
+
+Running benchmark rlist-black-height:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(rlst(v), red_height(nxt(v)) <= black_height(v) + 1)
+Implies(rlst(v),
+        black_height(nxt(v)) + black_height(v) <=
+        red_height(nxt(v)) + black_height(nxt(v)))
+Implies(rlst(v), 1 <= red_height(nxt(v)) + 1)
+Implies(rlst(v), red_height(v) == 1 + black_height(nxt(v)))
+Total lemmas proposed: 9
+Total lemmas proved: 4
+Benchmark rlist-black-height  SUCCESS: 1s + 6s
+
+Running benchmark rlist-list:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(rlst(v), lst(v))
+Total lemmas proposed: 2
+Total lemmas proved: 1
+Benchmark rlist-list  SUCCESS: 1s
+
+Running benchmark rlist-red-height:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(rlst(v), black_height(nxt(v)) + 1 == red_height(v))
+Implies(rlst(v), Implies(black(v), red(nxt(v))))
+Implies(rlst(v), 1 <= red_height(v))
+Total lemmas proposed: 7
+Total lemmas proved: 3
+Benchmark rlist-red-height  SUCCESS: 2s + 4s
+
+Running benchmark sdlist-dlist-slist:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(sdlst(v), dlst(v))
+Implies(sdlst(v), slst(v))
+Total lemmas proposed: 4
+Total lemmas proved: 2
+Benchmark sdlist-dlist-slist  SUCCESS: 2s
+
+Running benchmark sdlist-dlist:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(sdlst(v), dlst(v))
+Total lemmas proposed: 2
+Total lemmas proved: 1
+Benchmark sdlist-dlist  SUCCESS: 2s
+
+Running benchmark slist-list:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(slst(v), lst(v))
+Total lemmas proposed: 2
+Total lemmas proved: 1
+Benchmark slist-list  SUCCESS: 2s
+
+Running benchmark slseg-nil-slist:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(slseg(v1, v2), Implies(slst(v2), slst(v1)))
+Total lemmas proposed: 7
+Total lemmas proved: 1
+Benchmark slseg-nil-slist  SUCCESS: 7s
+
+Running benchmark tree-dag:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(tree(v1), dag(v1))
+Total lemmas proposed: 4
+Total lemmas proved: 1
+Benchmark tree-dag  SUCCESS: 3s
+
+Running benchmark tree-p-reach-tree:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(tree_p(v1), tree(v1))
+Implies(reach_lr(v1, v2), Implies(tree_p(v1), tree(v2)))
+Implies(reach_lr(v1, v2),
+        Implies(Not(v2 == nil), htree(v1)[v2]))
+Total lemmas proposed: 10
+Total lemmas proved: 3
+Benchmark tree-p-reach-tree  SUCCESS: 22s
+
+Running benchmark tree-p-reach:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(reach_lr(v1, v2), Implies(tree_p(v1), tree_p(v2)))
+Total lemmas proposed: 10
+Total lemmas proved: 1
+Benchmark tree-p-reach  SUCCESS: 12s
+
+Running benchmark tree-p-tree:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(tree_p(v1), tree(v1))
+Total lemmas proposed: 2
+Total lemmas proved: 1
+Benchmark tree-p-tree  SUCCESS: 2s
+
+Running benchmark tree-reach:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(reach_lr(v1, v2), Implies(tree(v1), tree(v2)))
+Total lemmas proposed: 6
+Total lemmas proved: 1
+Benchmark tree-reach  SUCCESS: 28s
+
+Running benchmark tree-reach2:
+---------------------------------------------------
+Goal is not first-order provable.
+Goal has been proven. Lemmas used to prove goal:
+Implies(reach_lr(v1, v2), Implies(tree(v1), tree(v2)))
+Implies(reach_lr(v1, v2),
+        Implies(Not(v2 == nil), htree(v1)[v2]))
+Total lemmas proposed: 11
+Total lemmas proved: 2
+Benchmark tree-reach2  SUCCESS: 27s
+
+---------------------------------------------------
+

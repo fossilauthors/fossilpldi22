@@ -1,0 +1,1390 @@
+Benchmark bst-left-right
+
+# declarations
+x, y = Vars('x y', fgsort)
+z, nil = Consts('z nil', fgsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+minr = RecFunction('minr', fgsort, intsort)
+maxr = RecFunction('maxr', fgsort, intsort)
+bst = RecFunction('bst', fgsort, boolsort)
+hbst = RecFunction('hbst', fgsort, fgsetsort)
+AddRecDefinition(minr, x, If(x == nil, 100, min_intsort(key(x), minr(lft(x)), minr(rght(x)))))
+AddRecDefinition(maxr, x, If(x == nil, -1, max_intsort(key(x), maxr(lft(x)), maxr(rght(x)))))
+AddRecDefinition(bst, x, If(x == nil, True,
+                            And(0 < key(x),
+                                And(key(x) < 100,
+                                    And(bst(lft(x)),
+                                        And(bst(rght(x)),
+                                            And(maxr(lft(x)) <= key(x),
+                                                And(key(x) <= minr(rght(x)),
+                                                    And(notInChildren(x),
+                                                        SetIntersect(hbst(lft(x)), hbst(rght(x)))
+                                                        == fgsetsort.lattice_bottom)))))))))
+AddRecDefinition(hbst, x, If(x == nil, fgsetsort.lattice_bottom,
+                             SetAdd(SetUnion(hbst(lft(x)), hbst(rght(x))), x)))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(bst(x), Implies(And(x != nil,
+                                   And(IsMember(y, hbst(lft(x))),
+                                       IsMember(z, hbst(rght(x))))),
+                               key(y) <= key(z)))
+
+----------------------
+
+Benchmark bst-left
+
+# declarations
+x = Var('x', fgsort)
+nil = Const('nil', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+keys = Function('keys', fgsort, intsetsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+minr = RecFunction('minr', fgsort, intsort)
+maxr = RecFunction('maxr', fgsort, intsort)
+bst = RecFunction('bst', fgsort, boolsort)
+hbst = RecFunction('hbst', fgsort, fgsetsort)
+AddRecDefinition(minr, x, If(x == nil, 100, min_intsort(key(x), minr(lft(x)), minr(rght(x)))))
+AddRecDefinition(maxr, x, If(x == nil, -1, max_intsort(key(x), maxr(lft(x)), maxr(rght(x)))))
+AddRecDefinition(bst, x, If(x == nil, True,
+                            And(0 < key(x),
+                                And(key(x) < 100,
+                                    And(bst(lft(x)),
+                                        And(bst(rght(x)),
+                                            And(maxr(lft(x)) <= key(x),
+                                                And(key(x) <= minr(rght(x)),
+                                                    And(notInChildren(x),
+                                                        SetIntersect(hbst(lft(x)), hbst(rght(x)))
+                                                        == fgsetsort.lattice_bottom)))))))))
+AddRecDefinition(hbst, x, If(x == nil, fgsetsort.lattice_bottom,
+                             SetAdd(SetUnion(hbst(lft(x)), hbst(rght(x))), x)))
+AddRecDefinition(keys, x, If(x == nil, fgsetsort.lattice_bottom,
+                             SetAdd(SetUnion(keys(lft(x)), keys(rght(x))), key(x))))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+
+# goal
+goal = Implies(bst(x), Implies(And(IsMember(k, keys(x)), k < key(x), x != nil), IsMember(k, keys(lft(x)))))
+
+----------------------
+
+Benchmark bst-leftmost
+
+# declarations
+x = Var('x', fgsort)
+y, nil = Consts('y nil', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+minr = Function('minr', fgsort, intsort)
+maxr = Function('maxr', fgsort, intsort)
+bst = RecFunction('bst', fgsort, boolsort)
+hbst = RecFunction('hbst', fgsort, fgsetsort)
+leftmost = RecFunction('leftmost', fgsort, fgsort)
+AddRecDefinition(minr, x, If(x == nil, 100, min_intsort(key(x), minr(lft(x)), minr(rght(x)))))
+AddRecDefinition(maxr, x, If(x == nil, -1, max_intsort(key(x), maxr(lft(x)), maxr(rght(x)))))
+AddRecDefinition(bst, x, If(x == nil, True,
+                            And(0 < key(x),
+                                And(key(x) < 100,
+                                    And(bst(lft(x)),
+                                        And(bst(rght(x)),
+                                            And(maxr(lft(x)) <= key(x),
+                                                And(key(x) <= minr(rght(x)),
+                                                    And(notInChildren(x),
+                                                        SetIntersect(hbst(lft(x)), hbst(rght(x)))
+                                                        == fgsetsort.lattice_bottom)))))))))
+AddRecDefinition(hbst, x, If(x == nil, fgsetsort.lattice_bottom,
+                             SetAdd(SetUnion(hbst(lft(x)), hbst(rght(x))), x)))
+AddRecDefinition(leftmost, x, If(x == nil, x,
+                                 If(lft(x) == nil, x, leftmost(lft(x)))))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(bst(x), Implies(And(x != nil, key(x) != k),
+                                   key(leftmost(x)) == minr(x)))
+
+----------------------
+
+Benchmark bst-maximal
+
+# declarations
+x = Var('x', fgsort)
+y, nil = Consts('y nil', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+minr = RecFunction('minr', fgsort, intsort)
+maxr = RecFunction('maxr', fgsort, intsort)
+bst = RecFunction('bst', fgsort, boolsort)
+hbst = RecFunction('hbst', fgsort, fgsetsort)
+AddRecDefinition(minr, x, If(x == nil, 100, min_intsort(key(x), minr(lft(x)), minr(rght(x)))))
+AddRecDefinition(maxr, x, If(x == nil, -1, max_intsort(key(x), maxr(lft(x)), maxr(rght(x)))))
+AddRecDefinition(bst, x, If(x == nil, True,
+                            And(0 < key(x),
+                                And(key(x) < 100,
+                                    And(bst(lft(x)),
+                                        And(bst(rght(x)),
+                                            And(maxr(lft(x)) <= key(x),
+                                                And(key(x) <= minr(rght(x)),
+                                                    And(notInChildren(x),
+                                                        SetIntersect(hbst(lft(x)), hbst(rght(x)))
+                                                        == fgsetsort.lattice_bottom)))))))))
+AddRecDefinition(hbst, x, If(x == nil, fgsetsort.lattice_bottom,
+                             SetAdd(SetUnion(hbst(lft(x)), hbst(rght(x))), x)))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(bst(x), Implies(And(x != nil, And(rght(y) != nil,
+                                   And(IsMember(y, hbst(x)),
+                                       And(k == maxr(x),
+                                           And(k == maxr(y), y != nil))))),
+                               k == maxr(rght(y))))
+
+----------------------
+
+Benchmark bst-minimal
+
+# declarations
+x = Var('x', fgsort)
+y, nil = Consts('y nil', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+minr = RecFunction('minr', fgsort, intsort)
+maxr = RecFunction('maxr', fgsort, intsort)
+bst = RecFunction('bst', fgsort, boolsort)
+hbst = RecFunction('hbst', fgsort, fgsetsort)
+AddRecDefinition(minr, x, If(x == nil, 100, min_intsort(key(x), minr(lft(x)), minr(rght(x)))))
+AddRecDefinition(maxr, x, If(x == nil, -1, max_intsort(key(x), maxr(lft(x)), maxr(rght(x)))))
+AddRecDefinition(bst, x, If(x == nil, True,
+                            And(0 < key(x),
+                                And(key(x) < 100,
+                                    And(bst(lft(x)),
+                                        And(bst(rght(x)),
+                                            And(maxr(lft(x)) <= key(x),
+                                                And(key(x) <= minr(rght(x)),
+                                                    And(notInChildren(x),
+                                                        SetIntersect(hbst(lft(x)), hbst(rght(x)))
+                                                        == fgsetsort.lattice_bottom)))))))))
+AddRecDefinition(hbst, x, If(x == nil, fgsetsort.lattice_bottom,
+                             SetAdd(SetUnion(hbst(lft(x)), hbst(rght(x))), x)))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(bst(x), Implies(And(x != nil, And(lft(y) != nil,
+                                   And(IsMember(y, hbst(x)),
+                                       And(k == minr(x),
+                                           And(k == minr(y), y != nil))))),
+                               k == minr(lft(y))))
+
+----------------------
+
+Benchmark bst-right
+
+# declarations
+x = Var('x', fgsort)
+nil = Const('nil', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+keys = Function('keys', fgsort, intsetsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+minr = RecFunction('minr', fgsort, intsort)
+maxr = RecFunction('maxr', fgsort, intsort)
+bst = RecFunction('bst', fgsort, boolsort)
+hbst = RecFunction('hbst', fgsort, fgsetsort)
+AddRecDefinition(minr, x, If(x == nil, 100, min_intsort(key(x), minr(lft(x)), minr(rght(x)))))
+AddRecDefinition(maxr, x, If(x == nil, -1, max_intsort(key(x), maxr(lft(x)), maxr(rght(x)))))
+AddRecDefinition(bst, x, If(x == nil, True,
+                            And(0 < key(x),
+                                And(key(x) < 100,
+                                    And(bst(lft(x)),
+                                        And(bst(rght(x)),
+                                            And(maxr(lft(x)) <= key(x),
+                                                And(key(x) <= minr(rght(x)),
+                                                    And(notInChildren(x),
+                                                        SetIntersect(hbst(lft(x)), hbst(rght(x)))
+                                                        == fgsetsort.lattice_bottom)))))))))
+AddRecDefinition(hbst, x, If(x == nil, fgsetsort.lattice_bottom,
+                             SetAdd(SetUnion(hbst(lft(x)), hbst(rght(x))), x)))
+AddRecDefinition(keys, x, If(x == nil, fgsetsort.lattice_bottom,
+                             SetAdd(SetUnion(keys(lft(x)), keys(rght(x))), key(x))))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+
+# goal
+goal = Implies(bst(x), Implies(And(IsMember(k, keys(x)), k > key(x), x != nil), IsMember(k, keys(rght(x)))))
+
+----------------------
+
+Benchmark bst-tree
+
+# declarations
+x = Var('x', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+tree = RecFunction('tree', fgsort, boolsort)
+minr = RecFunction('minr', fgsort, intsort)
+maxr = RecFunction('maxr', fgsort, intsort)
+bst = RecFunction('bst', fgsort, boolsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+AddRecDefinition(minr, x, If(x == nil, 100, min_intsort(key(x), minr(lft(x)), minr(rght(x)))))
+AddRecDefinition(maxr, x, If(x == nil, -1, max_intsort(key(x), maxr(lft(x)), maxr(rght(x)))))
+AddRecDefinition(tree, x, If(x == nil, True, And(tree(lft(x)), tree(rght(x)))))
+AddRecDefinition(tree, x, If(x == nil, True,
+                             And(And(And(Not(IsMember(x, htree(lft(x)))),
+                                         Not(IsMember(x, htree(rght(x)))))),
+                                 SetIntersect(htree(lft(x)), htree(rght(x)))
+                                 == fgsetsort.lattice_bottom,
+                                 And(tree(lft(x)), tree(rght(x))))))
+AddRecDefinition(bst, x, If(x == nil, True,
+                            And(0 < key(x),
+                                And(key(x) < 100,
+                                    And(bst(lft(x)),
+                                        And(bst(rght(x)),
+                                            And(maxr(lft(x)) <= key(x),
+                                                And(key(x) <= minr(rght(x)),
+                                                    And(notInChildren(x),
+                                                        SetIntersect(htree(lft(x)), htree(rght(x)))
+                                                        == fgsetsort.lattice_bottom)))))))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == lft(x))
+goal = Implies(bst(x), Implies(pgm, tree(ret)))
+
+----------------------
+
+Benchmark cyclic-next
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil = Const('nil', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+lseg = RecFunction('lseg', fgsort, fgsort, boolsort)
+cyclic = RecFunction('cyclic', fgsort, boolsort)
+AddRecDefinition(lseg, (x, y) , If(x == y, True,
+                                   If(x == nil, False,
+                                      lseg(nxt(x), y))))
+AddRecDefinition(cyclic, x, And(x != nil, lseg(nxt(x), x)))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+goal = Implies(cyclic(x), cyclic(nxt(x)))  
+
+----------------------
+
+Benchmark dag-reach
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+dag = RecFunction('dag', fgsort, boolsort)
+reach_lr = RecFunction('reach_lr', fgsort, fgsort, boolsort)
+AddRecDefinition(dag, x, If(x == nil, True, And(notInChildren(x),
+                                                And(dag(lft(x)), dag(rght(x))))))
+AddRecDefinition(reach_lr, (x, y), If(x == y, True,
+                                      Or(reach_lr(lft(x), y), reach_lr(rght(x), y))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(reach_lr(x, y), Implies(And(key(x) != k, dag(x)), dag(y)))
+
+----------------------
+
+Benchmark dag-reach2
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+dag = RecFunction('dag', fgsort, boolsort)
+reach_lr = RecFunction('reach_lr', fgsort, fgsort, boolsort)
+AddRecDefinition(dag, x, If(x == nil, True, And(notInChildren(x),
+                                                And(dag(lft(x)), dag(rght(x))))))
+AddRecDefinition(reach_lr, (x, y), If(x == y, True,
+                                      Or(reach_lr(lft(x), y), reach_lr(rght(x), y))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(dag(x), Implies(reach_lr(x, y), dag(y)))
+
+----------------------
+
+Benchmark dlist-list
+
+# declarations
+x = Var('x', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+prv = Function('prv', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+dlst = RecFunction('dlst', fgsort, boolsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(dlst, x, If(x == nil, True,
+                             If(nxt(x) == nil, True,
+                                And(prv(nxt(x)) == x, dlst(nxt(x))))))
+AddAxiom((), nxt(nil) == nil)
+AddAxiom((), prv(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == nxt(x))
+goal = Implies(dlst(x), Implies(pgm, lst(ret)))
+
+----------------------
+
+Benchmark even-list
+
+# declarations
+x = Var('x', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+odd_lst = RecFunction('odd_lst', fgsort, boolsort)
+even_lst = RecFunction('even_lst', fgsort, boolsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(even_lst, x, If(x == nil, True,
+                                If(nxt(x) == nil, False,
+                                   even_lst(nxt(nxt(x))))))
+AddRecDefinition(odd_lst, x, If(x == nil, False,
+                                  If(nxt(x) == nil, True,
+                                     odd_lst(nxt(nxt(x))))))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == nxt(x))
+goal = Implies(even_lst(x), Implies(pgm, lst(ret)))
+
+----------------------
+
+Benchmark list-even-or-odd
+
+# declarations
+x = Var('x', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+odd_lst = RecFunction('odd_lst', fgsort, boolsort)
+even_lst = RecFunction('even_lst', fgsort, boolsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(even_lst, x, If(x == nil, True,
+                                If(nxt(x) == nil, False,
+                                   even_lst(nxt(nxt(x))))))
+AddRecDefinition(odd_lst, x, If(x == nil, False,
+                                  If(nxt(x) == nil, True,
+                                     odd_lst(nxt(nxt(x))))))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == nxt(x))
+goal = Implies(lst(x), Implies(pgm, Or(even_lst(x), odd_lst(x))))
+
+----------------------
+
+Benchmark list-hlist-list
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil = Const('nil', fgsort)
+k = Const('k', intsort)
+nxt = Function('nxt', fgsort, fgsort)
+key = Function('key', fgsort, intsort)
+lst = RecFunction('lst', fgsort, boolsort)
+hlst = RecFunction('hlst', fgsort, fgsetsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(hlst, x, If(x == nil, fgsetsort.lattice_bottom, SetAdd(hlst(nxt(x)), x)))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+goal = Implies(lst(x), Implies(key(x) != k, Implies(IsMember(y, hlst(x)), lst(y))))
+
+----------------------
+
+Benchmark list-hlist-lseg
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil = Const('nil', fgsort)
+k = Const('k', intsort)
+nxt = Function('nxt', fgsort, fgsort)
+key = Function('key', fgsort, intsort)
+lst = RecFunction('lst', fgsort, boolsort)
+hlst = RecFunction('hlst', fgsort, fgsetsort)
+lseg = RecFunction('lseg', fgsort, fgsort, boolsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(hlst, x, If(x == nil, fgsetsort.lattice_bottom, SetAdd(hlst(nxt(x)), x)))
+AddRecDefinition(lseg, (x, y), If(x == y, True, lseg(nxt(x), y)))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+goal = Implies(lst(x), Implies(key(x) != k, Implies(IsMember(y, hlst(x)), lseg(x,y))))
+
+----------------------
+
+Benchmark list-lseg-keys
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil = Const('nil', fgsort)
+k = Const('k', intsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+lseg = RecFunction('lseg', fgsort, fgsort, boolsort)
+key = Function('key', fgsort, intsort)
+keys = RecFunction('keys', fgsort, intsetsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(lseg, (x, y) , If(x == y, True, lseg(nxt(x), y)))
+AddRecDefinition(keys, x, If(x == nil, fgsetsort.lattice_bottom, SetAdd(keys(nxt(x)), key(x))))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+goal = Implies(lst(x), Implies(And(And(y != nil, lseg(x, y)), key(y) == k), IsMember(k, keys(x))))
+
+----------------------
+
+Benchmark list-lseg-keys2
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil = Const('nil', fgsort)
+k = Const('k', intsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+lseg = RecFunction('lseg', fgsort, fgsort, boolsort)
+key = Function('key', fgsort, intsort)
+keys = RecFunction('keys', fgsort, intsetsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(lseg, (x, y) , If(x == y, True, lseg(nxt(x), y)))
+AddRecDefinition(keys, x, If(x == nil, fgsetsort.lattice_bottom, SetAdd(keys(nxt(x)), key(x))))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+goal = Implies(lseg(x, y), Implies(And(And(And(x != nil, y != nil), lst(x)), key(y) == k), IsMember(k, keys(x))))
+
+----------------------
+
+Benchmark listlen-list
+
+# declarations
+x = Var('x', fgsort)
+l = Var('l', intsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+lstlen_bool = RecFunction('lstlen_bool', fgsort, boolsort)
+lstlen_int = RecFunction('lstlen_int', fgsort, intsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(lstlen_bool, x, If(x == nil, True, lstlen_bool(nxt(x))))
+AddRecDefinition(lstlen_int, x, If(x == nil, 0, lstlen_int(nxt(x)) + 1))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+pgm = If(lstlen_int(x) == 1, ret == x, ret == nxt(x))
+goal = Implies(lstlen_bool(x), Implies(pgm, lst(ret)))
+
+----------------------
+
+Benchmark lseg-ext
+
+# declarations
+x, y, z = Vars('x y z', fgsort)
+nil = Const('nil', fgsort)
+k = Const('k', intsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+lseg = RecFunction('lseg', fgsort, fgsort, boolsort)
+key = Function('key', fgsort, intsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(lseg, (x, y) , If(x == y, True, lseg(nxt(x), y)))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+goal = Implies(lseg(x, y), Implies(And(key(x) != k, lseg(x, z)), Or(lseg(y, z), lseg(z, y))))
+
+----------------------
+
+Benchmark lseg-list
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+lseg = RecFunction('lseg', fgsort, fgsort, boolsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(lseg, (x, y) , If(x == y, True, lseg(nxt(x), y)))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == nxt(x))
+goal = Implies(lseg(x, y), Implies(pgm, Implies(lst(y), lst(ret))))
+
+----------------------
+
+Benchmark lseg-next-dyn
+
+# declarations
+x = Var('x', fgsort)
+nil, yc, zc = Consts('nil yc zc', fgsort)
+k = Const('k', intsort)
+nxt = Function('nxt', fgsort, fgsort)
+lsegy = RecFunction('lsegy', fgsort, boolsort)
+lsegz = RecFunction('lsegz', fgsort, boolsort)
+lsegy_p = RecFunction('lsegy_p', fgsort, boolsort)
+lsegz_p = RecFunction('lsegz_p', fgsort, boolsort)
+key = Function('key', fgsort, intsort)
+AddRecDefinition(lsegy, x , If(x == yc, True, lsegy(nxt(x))))
+AddRecDefinition(lsegz, x , If(x == zc, True, lsegz(nxt(x))))
+# lsegy_p, lsegz_p defs reflect change of nxt(y) == z
+AddRecDefinition(lsegy_p, x , If(x == yc, True, lsegy_p(If(x == yc, zc, nxt(x)))))
+AddRecDefinition(lsegz_p, x , If(x == zc, True, lsegz_p(If(x == yc, zc, nxt(x)))))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+goal = Implies(lsegy(x), Implies(key(x) != k, lsegz_p(x)))
+
+----------------------
+
+Benchmark lseg-next
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, z = Consts('nil z', fgsort)
+k = Const('k', intsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+lseg = RecFunction('lseg', fgsort, fgsort, boolsort)
+key = Function('key', fgsort, intsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(lseg, (x, y) , If(x == y, True, lseg(nxt(x), y)))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+goal = Implies(lseg(x, y), Implies(And(key(x) != k, nxt(y) == z), lseg(x, z)))
+
+----------------------
+
+Benchmark lseg-nil-list
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+lseg = RecFunction('lseg', fgsort, fgsort, boolsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(lseg, (x, y) , If(x == y, True, lseg(nxt(x), y)))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == nxt(x))
+goal = Implies(lseg(x, y), Implies(y == nil, Implies(pgm, lst(ret))))
+
+----------------------
+
+Benchmark lseg-trans
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, c, z = Consts('nil c z', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+lseg = RecFunction('lseg', fgsort, fgsort, boolsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(lseg, (x, y) , If(x == y, True, lseg(nxt(x), y)))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+rhs = Implies(And(lst(y), And(x != c, nxt(y) == z)), And(lseg(x, z), lst(z)))
+goal = Implies(lseg(x, y), rhs)
+
+----------------------
+
+Benchmark lseg-trans2
+
+# declarations
+x, y, z = Vars('x y z', fgsort)
+nil = Const('nil', fgsort)
+k = Const('k', intsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+lseg = RecFunction('lseg', fgsort, fgsort, boolsort)
+key = Function('key', fgsort, intsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(lseg, (x, y) , If(x == y, True, lseg(nxt(x), y)))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+goal = Implies(lseg(x, y), Implies(And(key(x) != k, lseg(y, z)), lseg(x, z)))
+
+----------------------
+
+Benchmark maxheap-dag
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+tree = RecFunction('tree', fgsort, boolsort)
+dag = RecFunction('dag', fgsort, boolsort)
+maxheap = RecFunction('maxheap', fgsort, boolsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+AddRecDefinition(dag, x, If(x == nil, True, And(notInChildren(x),
+                                                And(dag(lft(x)), dag(rght(x))))))
+AddRecDefinition(maxheap, x, If(x == nil, True,
+                                And(notInChildren(x),
+                                    And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                        == fgsetsort.lattice_bottom,
+                                        And(maxheap(lft(x)),
+                                            And(maxheap(rght(x)),
+                                                And(key(lft(x)) <= key(x),
+                                                    key(rght(x)) <= key(x))))))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == lft(x))
+goal = Implies(maxheap(x), Implies(pgm, dag(ret)))
+
+----------------------
+
+Benchmark maxheap-htree-key
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+maxheap = RecFunction('maxheap', fgsort, boolsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+AddRecDefinition(maxheap, x, If(x == nil, True,
+                                And(notInChildren(x),
+                                    And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                        == fgsetsort.lattice_bottom,
+                                        And(maxheap(lft(x)),
+                                            And(maxheap(rght(x)),
+                                                And(key(lft(x)) <= key(x),
+                                                    key(rght(x)) <= key(x))))))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(maxheap(x), Implies(key(x) != k, Implies(IsMember(y, htree(x)), key(y) <= key(x))))
+
+----------------------
+
+Benchmark maxheap-keys
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+keys = Function('keys', fgsort, intsetsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+maxheap = RecFunction('maxheap', fgsort, boolsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+AddRecDefinition(maxheap, x, If(x == nil, True,
+                                And(notInChildren(x),
+                                    And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                        == fgsetsort.lattice_bottom,
+                                        And(maxheap(lft(x)),
+                                            And(maxheap(rght(x)),
+                                                And(key(lft(x)) <= key(x),
+                                                    key(rght(x)) <= key(x))))))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddRecDefinition(keys, x, If(x == nil, fgsetsort.lattice_bottom,
+                             SetAdd(SetUnion(keys(lft(x)), keys(rght(x))), key(x))))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(maxheap(x), Implies(lft(x) != nil, Implies(IsMember(k, keys(x)), k <= key(x))))
+
+----------------------
+
+Benchmark maxheap-tree
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+tree = RecFunction('tree', fgsort, boolsort)
+maxheap = RecFunction('maxheap', fgsort, boolsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+AddRecDefinition(tree, x, If(x == nil, True,
+                             And(notInChildren(x),
+                                 And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                     == fgsetsort.lattice_bottom,
+                                     And(tree(lft(x)), tree(rght(x)))))))
+AddRecDefinition(maxheap, x, If(x == nil, True,
+                                And(notInChildren(x),
+                                    And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                        == fgsetsort.lattice_bottom,
+                                        And(maxheap(lft(x)),
+                                            And(maxheap(rght(x)),
+                                                And(key(lft(x)) <= key(x),
+                                                    key(rght(x)) <= key(x))))))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == lft(x))
+goal = Implies(maxheap(x), Implies(pgm, tree(ret)))
+
+----------------------
+
+Benchmark odd-list
+
+# declarations
+x = Var('x', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+odd_lst = RecFunction('odd_lst', fgsort, boolsort)
+even_lst = RecFunction('even_lst', fgsort, boolsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(even_lst, x, If(x == nil, True,
+                                If(nxt(x) == nil, False,
+                                   even_lst(nxt(nxt(x))))))
+AddRecDefinition(odd_lst, x, If(x == nil, False,
+                                  If(nxt(x) == nil, True,
+                                     odd_lst(nxt(nxt(x))))))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == nxt(x))
+goal = Implies(odd_lst(x), Implies(pgm, lst(ret)))
+
+----------------------
+
+Benchmark reach-left-right
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret, z = Consts('nil ret z', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+tree = RecFunction('tree', fgsort, boolsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+reach_lr = RecFunction('reach_lr', fgsort, fgsort, boolsort)
+AddRecDefinition(tree, x, If(x == nil, True,
+                             And(notInChildren(x),
+                                 And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                     == fgsetsort.lattice_bottom,
+                                     And(tree(lft(x)), tree(rght(x)))))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddRecDefinition(reach_lr, (x, y), If(x == y, True,
+                                      Or(reach_lr(lft(x), y), reach_lr(rght(x), y))))
+
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(tree(x), Implies(And(x != nil,
+                                    And(y != nil,
+                                        And(reach_lr(lft(x), y), reach_lr(rght(x), z)))),
+                                y != z))
+
+----------------------
+
+Benchmark reachability
+
+# declarations
+x = Var('x', fgsort)
+c, s, nil = Consts('c s nil', fgsort)
+v1 = Function('v1', fgsort, fgsort)
+v2 = Function('v2', fgsort, fgsort)
+p = Function('p', fgsort, fgsort)
+n = Function('n', fgsort, fgsort)
+
+reach_pgm = RecFunction('reach_pgm', fgsort, boolsort)
+
+# precondition
+AddAxiom((), v1(s) == v2(s))
+
+cond = v1(p(x)) != nil
+assign1 = v1(x) == n(v1(p(x)))
+assign2 = If( v2(p(x)) != c,
+              v2(x) == n(v2(p(x))),
+              v2(x) == v2(p(x)) )
+assign = And(assign1, assign2)
+AddRecDefinition(reach_pgm, x, If(x == s, True, And(reach_pgm(p(x)), And(cond, assign))))
+
+# goal
+lhs = v1(x) == nil
+rhs = Or(v2(x) == nil, v2(x) == c)
+goal = Implies(reach_pgm(x), Implies(lhs, rhs))
+
+----------------------
+
+Benchmark reachability2
+
+# declarations
+x = Var('x', fgsort)
+c, s, nil = Consts('c s nil', fgsort)
+v1 = Function('v1', fgsort, fgsort)
+v2 = Function('v2', fgsort, fgsort)
+p = Function('p', fgsort, fgsort)
+n = Function('n', fgsort, fgsort)
+
+reach_pgm = RecFunction('reach_pgm', fgsort, boolsort)
+
+# precondition
+AddAxiom((), v1(s) == v2(s))
+
+cond = v1(p(x)) != nil
+assign1 = v1(x) == n(v1(p(x)))
+assign2 = v2(x) == n(v2(p(x)))
+assign = And(assign1, assign2)
+AddRecDefinition(reach_pgm, x, If(x == s, True, And(reach_pgm(p(x)), And(cond, assign))))
+
+# goal
+lhs = v1(x) == nil
+rhs = v2(x) == nil
+goal = Implies(reach_pgm(x), Implies(lhs, rhs))
+
+----------------------
+
+Benchmark reachability3
+
+# declarations
+x = Var('x', fgsort)
+c, s, nil = Consts('c s nil', fgsort)
+v1 = Function('v1', fgsort, fgsort)
+v2 = Function('v2', fgsort, fgsort)
+p = Function('p', fgsort, fgsort)
+n = Function('n', fgsort, fgsort)
+
+reach_pgm = RecFunction('reach_pgm', fgsort, boolsort)
+
+# precondition
+AddAxiom((), v1(s) == v2(s))
+
+cond = v1(p(x)) != c
+assign1 = v1(x) == n(v1(p(x)))
+assign2 = If( v2(p(x)) != c,
+              v2(x) == n(v2(p(x))),
+              v2(x) == v2(p(x)) )
+assign = And(assign1, assign2)
+AddRecDefinition(reach_pgm, x, If(x == s, True, And(reach_pgm(p(x)), And(cond, assign))))
+
+# goal
+lhs = v1(x) == nil
+rhs = Or(v2(x) == nil, v2(x) == c)
+goal = Implies(reach_pgm(x), Implies(lhs, rhs))
+
+----------------------
+
+Benchmark reachability4
+
+# declarations
+x = Var('x', fgsort)
+c, s, nil = Consts('c s nil', fgsort)
+v1 = Function('v1', fgsort, fgsort)
+v2 = Function('v2', fgsort, fgsort)
+p = Function('p', fgsort, fgsort)
+n = Function('n', fgsort, fgsort)
+
+reach_pgm = RecFunction('reach_pgm', fgsort, boolsort)
+
+# precondition
+AddAxiom((), v1(s) == v2(s))
+
+cond = v1(p(x)) != c
+assign1 = v1(x) == n(v1(p(x)))
+assign2 = v2(x) == n(v2(p(x)))
+assign = And(assign1, assign2)
+AddRecDefinition(reach_pgm, x, If(x == s, True, And(reach_pgm(p(x)), And(cond, assign))))
+
+# goal
+lhs = v1(x) == nil
+rhs = v2(x) == nil
+goal = Implies(reach_pgm(x), Implies(lhs, rhs))
+
+----------------------
+
+Benchmark reachability5
+
+# declarations
+x = Var('x', fgsort)
+c, s, nil = Consts('c s nil', fgsort)
+v1 = Function('v1', fgsort, fgsort)
+v2 = Function('v2', fgsort, fgsort)
+p = Function('p', fgsort, fgsort)
+n = Function('n', fgsort, fgsort)
+
+reach_pgm = RecFunction('reach_pgm', fgsort, boolsort)
+
+# precondition
+AddAxiom((), v1(s) == n(v2(s)))
+
+cond = v1(p(x)) != nil
+assign1 = v1(x) == n(v1(p(x)))
+assign2 = If( v2(p(x)) != c,
+              v2(x) == n(v2(p(x))),
+              v2(x) == v2(p(x)) )
+assign = And(assign1, assign2)
+AddRecDefinition(reach_pgm, x, If(x == s, True, And(reach_pgm(p(x)), And(cond, assign))))
+
+# goal
+lhs = v1(x) == nil
+rhs = Or(n(v2(x)) == nil, v2(x) == c)
+goal = Implies(reach_pgm(x), Implies(lhs, rhs))
+
+----------------------
+
+Benchmark reachability6
+
+# declarations
+x = Var('x', fgsort)
+c, s, nil = Consts('c s nil', fgsort)
+v1 = Function('v1', fgsort, fgsort)
+v2 = Function('v2', fgsort, fgsort)
+p = Function('p', fgsort, fgsort)
+n = Function('n', fgsort, fgsort)
+
+reach_pgm = RecFunction('reach_pgm', fgsort, boolsort)
+
+# precondition
+AddAxiom((), v1(s) == n(v2(s)))
+
+cond = v1(p(x)) != nil
+assign1 = v1(x) == n(v1(p(x)))
+assign2 = v2(x) == n(v2(p(x)))
+assign = And(assign1, assign2)
+AddRecDefinition(reach_pgm, x, If(x == s, True, And(reach_pgm(p(x)), And(cond, assign))))
+
+# goal
+lhs = v1(x) == nil
+rhs = n(v2(x)) == nil
+goal = Implies(reach_pgm(x), Implies(lhs, rhs))
+
+----------------------
+
+Benchmark rlist-black-height
+
+# declarations
+x = Var('x', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+rlst = RecFunction('rlst', fgsort, boolsort)
+red = Function('red', fgsort, boolsort)
+black = Function('black', fgsort, boolsort)
+red_height = RecFunction('red_height', fgsort, intsort)
+black_height = RecFunction('black_height', fgsort, intsort)
+AddRecDefinition(rlst, x, If(x == nil, True,
+                             And(Or(And(red(x),
+                                        And(Not(black(x)),
+                                            And(black(nxt(x)), Not(red(nxt(x)))))),
+                                    And(black(x),
+                                        And(Not(red(x)),
+                                            And(red(nxt(x)), Not(black(nxt(x))))))),
+                                 rlst(nxt(x)))))
+AddRecDefinition(red_height, x, If(x == nil, 1,
+                                   If(red(x), 1 + red_height(nxt(x)), red_height(nxt(x)))))
+AddRecDefinition(black_height, x, If(x == nil, 0,
+                                     If(black(x), 1 + black_height(nxt(x)), black_height(nxt(x)))))
+AddAxiom((), nxt(nil) == nil)
+AddAxiom((), red(nil))
+AddAxiom((), Not(black(nil)))
+
+# goal
+goal = Implies(rlst(x), Implies(black(x), red_height(x) == black_height(x)))
+
+----------------------
+
+Benchmark rlist-list
+
+# declarations
+x = Var('x', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+lst = RecFunction('lst', fgsort, boolsort)
+rlst = RecFunction('rlst', fgsort, boolsort)
+red = Function('red', fgsort, boolsort)
+black = Function('black', fgsort, boolsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(rlst, x, If(x == nil, True,
+                             And(Or(And(red(x),
+                                        And(Not(black(x)),
+                                            And(black(nxt(x)), Not(red(nxt(x)))))),
+                                    And(black(x),
+                                        And(Not(red(x)),
+                                            And(red(nxt(x)), Not(black(nxt(x))))))),
+                                 rlst(nxt(x)))))
+AddAxiom((), nxt(nil) == nil)
+AddAxiom((), red(nil))
+
+# goal
+pgm = If(x == nil, ret == nil, ret == nxt(x))
+goal = Implies(rlst(x), Implies(pgm, lst(ret)))
+
+----------------------
+
+Benchmark rlist-red-height
+
+# declarations
+x = Var('x', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+rlst = RecFunction('rlst', fgsort, boolsort)
+red = Function('red', fgsort, boolsort)
+black = Function('black', fgsort, boolsort)
+red_height = RecFunction('red_height', fgsort, intsort)
+black_height = RecFunction('black_height', fgsort, intsort)
+AddRecDefinition(rlst, x, If(x == nil, True,
+                             And(Or(And(red(x),
+                                        And(Not(black(x)),
+                                            And(black(nxt(x)), Not(red(nxt(x)))))),
+                                    And(black(x),
+                                        And(Not(red(x)),
+                                            And(red(nxt(x)), Not(black(nxt(x))))))),
+                                 rlst(nxt(x)))))
+AddRecDefinition(red_height, x, If(x == nil, 1,
+                                   If(red(x), 1 + red_height(nxt(x)), red_height(nxt(x)))))
+AddRecDefinition(black_height, x, If(x == nil, 0,
+                                     If(black(x), 1 + black_height(nxt(x)), black_height(nxt(x)))))
+AddAxiom((), nxt(nil) == nil)
+AddAxiom((), red(nil))
+AddAxiom((), Not(black(nil)))
+
+# goal
+goal = Implies(rlst(x), Implies(red(x), red_height(x) == 1 + black_height(x)))
+
+----------------------
+
+Benchmark sdlist-dlist-slist
+
+# declarations
+x = Var('x', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+prv = Function('prv', fgsort, fgsort)
+key = Function('key', fgsort, intsort)
+dlst = RecFunction('dlst', fgsort, boolsort)
+slst = RecFunction('slst', fgsort, boolsort)
+sdlst = RecFunction('sdlst', fgsort, boolsort)
+AddRecDefinition(dlst, x, If(x == nil, True,
+                             If(nxt(x) == nil, True,
+                                And(prv(nxt(x)) == x, dlst(nxt(x))))))
+AddRecDefinition(slst, x, If(x == nil, True,
+                             If(nxt(x) == nil, True,
+                                And(key(x) <= key(nxt(x)), slst(nxt(x))))))
+AddRecDefinition(sdlst, x, If(x == nil, True,
+                              If(nxt(x) == nil, True,
+                                 And(prv(nxt(x)) == x,
+                                     And(key(x) <= key(nxt(x)), sdlst(nxt(x)))))))
+
+AddAxiom((), nxt(nil) == nil)
+AddAxiom((), prv(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == nxt(x))
+goal = Implies(sdlst(x), Implies(pgm, And(dlst(ret), slst(ret))))
+
+----------------------
+
+Benchmark sdlist-dlist
+
+# declarations
+x = Var('x', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+prv = Function('prv', fgsort, fgsort)
+key = Function('key', fgsort, intsort)
+dlst = RecFunction('dlst', fgsort, boolsort)
+sdlst = RecFunction('sdlst', fgsort, boolsort)
+AddRecDefinition(dlst, x, If(x == nil, True,
+                             If(nxt(x) == nil, True,
+                                And(prv(nxt(x)) == x, dlst(nxt(x))))))
+AddRecDefinition(sdlst, x, If(x == nil, True,
+                              If(nxt(x) == nil, True,
+                                 And(prv(nxt(x)) == x,
+                                     And(key(x) <= key(nxt(x)), sdlst(nxt(x)))))))
+
+AddAxiom((), nxt(nil) == nil)
+AddAxiom((), prv(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == nxt(x))
+goal = Implies(sdlst(x), Implies(pgm, dlst(ret)))
+
+----------------------
+
+Benchmark slist-list
+
+# declarations
+x = Var('x', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+key = Function('key', fgsort, intsort)
+lst = RecFunction('lst', fgsort, boolsort)
+slst = RecFunction('slst', fgsort, boolsort)
+AddRecDefinition(lst, x, If(x == nil, True, lst(nxt(x))))
+AddRecDefinition(slst, x, If(x == nil, True,
+                             If(nxt(x) == nil, True,
+                                And(key(x) <= key(nxt(x)), slst(nxt(x))))))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == nxt(x))
+goal = Implies(slst(x), Implies(pgm, lst(ret)))
+
+----------------------
+
+Benchmark slseg-nil-slist
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+nxt = Function('nxt', fgsort, fgsort)
+key = Function('key', fgsort, intsort)
+slst = RecFunction('slst', fgsort, boolsort)
+slseg = RecFunction('slseg', fgsort, fgsort, boolsort)
+AddRecDefinition(slst, x, If(x == nil, True,
+                             If(nxt(x) == nil, True,
+                                And(key(x) <= key(nxt(x)), slst(nxt(x))))))
+AddRecDefinition(slseg, (x, y), If(x == y, True,
+                                   And(key(x) <= key(nxt(x)), slseg(nxt(x), y))))
+AddAxiom((), nxt(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == nxt(x))
+goal = Implies(slseg(x, y), Implies(y == nil, Implies(pgm, slst(ret))))
+
+----------------------
+
+Benchmark tree-dag
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+dag = RecFunction('dag', fgsort, boolsort)
+tree = RecFunction('tree', fgsort, boolsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+AddRecDefinition(dag, x, If(x == nil, True, And(notInChildren(x),
+                                                And(dag(lft(x)), dag(rght(x))))))
+AddRecDefinition(tree, x, If(x == nil, True,
+                             And(notInChildren(x),
+                                 And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                     == fgsetsort.lattice_bottom,
+                                     And(tree(lft(x)), tree(rght(x)))))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+pgm = If(x == nil, ret == nil, ret == lft(x))
+goal = Implies(tree(x), Implies(pgm, dag(ret)))
+
+----------------------
+
+Benchmark tree-p-reach-tree
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+parent = Function('parent', fgsort, fgsort)
+tree = RecFunction('tree', fgsort, boolsort)
+tree_p = RecFunction('tree_p', fgsort, boolsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+reach_lr = RecFunction('reach_lr', fgsort, fgsort, boolsort)
+AddRecDefinition(tree, x, If(x == nil, True,
+                             And(notInChildren(x),
+                                 And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                     == fgsetsort.lattice_bottom,
+                                     And(tree(lft(x)), tree(rght(x)))))))
+AddRecDefinition(tree_p, x, If(x == nil, True,
+                               And(notInChildren(x),
+                                   And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                       == fgsetsort.lattice_bottom,
+                                       And(And(parent(lft(x)) == x, parent(rght(x)) == x),
+                                           And(tree_p(lft(x)), tree_p(rght(x))))))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddRecDefinition(reach_lr, (x, y), If(x == y, True,
+                                   Or(reach_lr(lft(x), y), reach_lr(rght(x), y))))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(tree_p(x), Implies(parent(x) == nil, Implies(reach_lr(x,y), tree(y))))
+
+----------------------
+
+Benchmark tree-p-reach
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+parent = Function('parent', fgsort, fgsort)
+tree_p = RecFunction('tree_p', fgsort, boolsort)
+htree_p = RecFunction('htree_p', fgsort, fgsetsort)
+reach_lr = RecFunction('reach_lr', fgsort, fgsort, boolsort)
+AddRecDefinition(tree_p, x, If(x == nil, True,
+                               And(notInChildren(x),
+                                   And(SetIntersect(htree_p(lft(x)), htree_p(rght(x)))
+                                       == fgsetsort.lattice_bottom,
+                                       And(And(parent(lft(x)) == x, parent(rght(x)) == x),
+                                           And(tree_p(lft(x)), tree_p(rght(x))))))))
+AddRecDefinition(htree_p, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree_p(lft(x)), htree_p(rght(x))), x)))
+AddRecDefinition(reach_lr, (x, y), If(x == y, True,
+                                   Or(reach_lr(lft(x), y), reach_lr(rght(x), y))))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(tree_p(x), Implies(reach_lr(x,y), tree_p(y)))
+
+----------------------
+
+Benchmark tree-p-tree
+
+# declarations
+x = Var('x', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+parent = Function('parent', fgsort, fgsort)
+tree = RecFunction('tree', fgsort, boolsort)
+tree_p = RecFunction('tree_p', fgsort, boolsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+AddRecDefinition(tree, x, If(x == nil, True,
+                             And(notInChildren(x),
+                                 And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                     == fgsetsort.lattice_bottom,
+                                     And(tree(lft(x)), tree(rght(x)))))))
+AddRecDefinition(tree_p, x, If(x == nil, True,
+                               And(notInChildren(x),
+                                   And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                       == fgsetsort.lattice_bottom,
+                                       And(And(parent(lft(x)) == x, parent(rght(x)) == x),
+                                           And(tree_p(lft(x)), tree_p(rght(x))))))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(tree_p(x), Implies(parent(x) == nil, tree(x)))
+
+----------------------
+
+Benchmark tree-reach
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+k = Const('k', intsort)
+key = Function('key', fgsort, intsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+tree = RecFunction('tree', fgsort, boolsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+reach_lr = RecFunction('reach_lr', fgsort, fgsort, boolsort)
+AddRecDefinition(tree, x, If(x == nil, True,
+                             And(notInChildren(x),
+                                 And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                     == fgsetsort.lattice_bottom,
+                                     And(tree(lft(x)), tree(rght(x)))))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddRecDefinition(reach_lr, (x, y), If(x == y, True,
+                                      Or(reach_lr(lft(x), y), reach_lr(rght(x), y))))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(reach_lr(x, y), Implies(And(key(x) != k, tree(x)), tree(y)))
+
+----------------------
+
+Benchmark tree-reach2
+
+# declarations
+x, y = Vars('x y', fgsort)
+nil, ret = Consts('nil ret', fgsort)
+lft = Function('lft', fgsort, fgsort)
+rght = Function('rght', fgsort, fgsort)
+tree = RecFunction('tree', fgsort, boolsort)
+htree = RecFunction('htree', fgsort, fgsetsort)
+reach_lr = RecFunction('reach_lr', fgsort, fgsort, boolsort)
+AddRecDefinition(tree, x, If(x == nil, True,
+                             And(notInChildren(x),
+                                 And(SetIntersect(htree(lft(x)), htree(rght(x)))
+                                     == fgsetsort.lattice_bottom,
+                                     And(tree(lft(x)), tree(rght(x)))))))
+AddRecDefinition(htree, x, If(x == nil, fgsetsort.lattice_bottom,
+                              SetAdd(SetUnion(htree(lft(x)), htree(rght(x))), x)))
+AddRecDefinition(reach_lr, (x, y), If(x == y, True,
+                                      Or(reach_lr(lft(x), y), reach_lr(rght(x), y))))
+AddAxiom((), lft(nil) == nil)
+AddAxiom((), rght(nil) == nil)
+
+# goal
+goal = Implies(tree(x), Implies(reach_lr(x, y), tree(y)))
+
+
